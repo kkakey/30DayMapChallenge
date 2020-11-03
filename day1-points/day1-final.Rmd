@@ -1,0 +1,59 @@
+---
+title: "Day 1"
+author: "Kristen A, kkakey"
+date: "11/2/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Data: [OpenTrees.org](https://opentrees.org/#pos=10.47/43.0897/-89.4298) Madison, WI
+
+
+
+```{r}
+library(sf)
+library(tidyverse)
+```
+
+
+```{r}
+trees <- read_sf("raw-data/Street_Trees-shp/Street_Trees.shp")
+madison <- read_sf("raw-data/Madison_Urban_Area_Boundary-shp/Madison_Urban_Area_Boundary.shp")
+sidewalk <- read_sf("output-data/sidewalks.shp")
+roads <- read_sf("output-data/roads.shp")
+water <- read_sf("output-data/water.shp")
+
+# extract lat/long of trees
+trees_ll <- extract(trees, geometry, into = c('Lat', 'Lon'), '\\((.*),(.*)\\)', conv = T)
+trees_ll <- trees_ll[,1:6]
+```
+
+
+```{r}
+ggplot() +
+  geom_sf(data=madison, color="gray20", fill="#525151") +
+  stat_density_2d(data=trees_ll, aes(Lat, Lon, fill = ..level..), geom = "polygon") +
+  scale_fill_gradient(low = '#B4E5B3', high = '#163D15', name="") +
+  theme_void() +
+  theme(legend.position = c(.3,0),
+       legend.justification = c(1,-.1),
+       legend.direction="horizontal",
+       plot.background =  element_rect(fill="#292828", color="#292828"),
+       panel.background =  element_rect(fill="#292828", color="#292828"),
+       text = element_text(colour = "white", family="EBGaramond12-Regular"),
+       plot.title = element_text(vjust = -10, hjust = .13, size=20),
+       plot.caption = element_text(vjust=1.7, hjust=.99),
+       legend.text = element_text(size = 10),
+       plot.margin=grid::unit(c(0,0,0,0), "mm")
+       ) +
+  coord_sf(expand = FALSE,  ylim = c(42.88, 43.28), xlim = c( -89.7, -89.1)) + 
+  ggtitle("Trees in Madison, WI") +
+  labs(caption = "@kkakey\nData: Madison Open Data") +
+  ggsave("day1.png", dpi=300)
+```
+
+
+
