@@ -1,0 +1,35 @@
+---
+title: "day2"
+author: "Kristen A"
+date: "11/3/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(sf)
+library(tidyverse)
+roads_clipped <- read_sf("output-data/roads_clipped.shp")
+```
+
+
+```{r}
+ggplot() +
+  geom_sf(data=roads_clipped) +
+  theme_void() +
+  ggtitle("Budapest") +
+  ggsave("budapest.png", width=8.5, height=6, dpi=350)
+
+# with city name
+ggplot() +
+  geom_sf(data=roads_clipped) +
+  theme_void() +
+  ggtitle("Budapest 2020") +
+  theme(text = element_text(family="Magyar Script"),
+        plot.title = element_text(vjust = -68, hjust = 1, size=20)) +
+  ggsave("budapest-title-2020.png", width=8.5, height=6, dpi=350)
+```
