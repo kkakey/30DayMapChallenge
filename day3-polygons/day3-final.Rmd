@@ -1,0 +1,31 @@
+---
+title: "day3-final"
+author: "Kristen A"
+date: "11/6/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(sf)
+```
+
+```{r}
+buildings <- read_sf("output-data//buildings.shp")
+roads <- read_sf("output-data/roads.shp")
+```
+
+```{r}
+# simple plot of Budapest roads and buildings
+ggplot() +
+  geom_sf(data=buildings) +
+  geom_sf(data=roads) +
+  theme_void() +
+  coord_sf(clip="off", ylim = c(47.45, 47.555), xlim = c( 19, 19.08)) +
+  ggsave("budapest-buildings.png", dpi=350, width=8, height=6)
+```
+
