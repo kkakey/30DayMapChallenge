@@ -1,0 +1,93 @@
+---
+title: "Day 5 - Blue"
+author: "Kristen A, kkakey"
+date: "11/15/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(sf)
+```
+
+```{r}
+tzones <- read_sf("output-data/us-timezones.shp")
+world <- read_sf("raw-data/World_Continents/4a7d27e1-84a3-4d6a-b4c2-6b6919f3cf4b202034-1-2zg7ul.ht5ut.shp")
+states <- read_sf("output-data/cb_2018_us_state_500k/cb_2018_us_state_500k.shp")
+```
+
+```{r}
+world <- world %>%
+  filter(CONTINENT=="North America")
+
+sf_cent <- st_centroid(tzones)
+sf_cent$time_zone <- stringr::str_remove(string=tzones$tz_name1st, pattern="America/")
+
+
+sf_cent <- sf_cent %>%
+  arrange(utc_format) %>%
+  mutate(utc_format = paste(sort(sf_cent$utc_format), 
+              sapply(c("\nEastern", "\nCentral", "\nMountain", "\nPacific"), 
+              paste, collapse='')))
+
+tzones <- tzones %>%
+  arrange(utc_format) %>%
+  mutate(tzone = c("Eastern", "Central", "Mountain", "Pacific"))
+```
+
+
+```{r}
+ggplot() +
+  geom_sf(data=world, fill="#12122B", color=NA) +
+  geom_sf(data=tzones, aes(fill=utc_format), size=.2, color="black") + 
+  geom_sf_text(data = sf_cent, aes(label = utc_format),family="New", face = "bold", color="white") +
+    coord_sf(expand = T,  
+             ylim = c(25, 52), xlim = c( -125, -69)) + 
+  theme_void() +
+  theme(plot.background = element_rect(fill="#183139"),
+        text = element_text(colour = "white", family="New", face = "bold"),
+        plot.title = element_text(hjust=.12, vjust=-50, size=20,
+                      margin = margin(t = 30, b = -35))) +
+  guides(fill = FALSE) +
+  scale_fill_manual(values=c("#092C48", "#0D426D", "#115892", "#156EB7")) +
+  ggtitle("Continental U.S Time Zones") +
+  ggsave("day5-1.png", dpi=450)
+
+
+tzones$tzone <- factor(tzones$tzone, levels = c("Eastern",  "Central",  "Mountain", "Pacific" ))
+
+ggplot() +
+  geom_sf(data=world, fill="#12122B", color=NA) +
+  geom_sf(data=tzones, aes(fill=tzone), size=.2, color="black") + 
+  geom_sf(data=states, fill=NA, size=.2, color="black") + 
+    coord_sf(expand = T,  
+             ylim = c(25, 52), xlim = c( -125, -69)) + 
+  theme_void() +
+  theme(legend.position = c(.96,.06),
+        legend.justification = c(1,-.1),
+        plot.background = element_rect(fill="#183139"),
+        text = element_text(colour = "white", family="New", face = "bold"),
+        plot.title = element_text(hjust=.12, vjust=-50, size=20,
+                      margin = margin(t = 30, b = -35))) +
+  # guides(fill = FALSE) +
+  scale_fill_manual(name="Time Zone", values=c("#092C48","#0D426D", "#115892", "#156EB7")) +
+  ggtitle("Continental U.S Time Zones") +
+  ggsave("day5-2.png", dpi=450)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
