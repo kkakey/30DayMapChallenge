@@ -31,3 +31,11 @@ My contribution to [#30DayMapChallenge](https://github.com/tjukanovt/30DayMapCha
 
 ![](https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/day4-hexagons/dq2-logo.png)
 
+**************************************************************************************************
+#### Day 5 - [Blue](https://github.com/kkakey/30DayMapChallenge/blob/main/day5-blue/day5-blue.Rmd) 
+
+![](https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/day5-blue/day5-1.png)
+
+![](https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/day5-blue/day5-2.png)
+
+
