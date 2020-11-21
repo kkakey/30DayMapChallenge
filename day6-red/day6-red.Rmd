@@ -1,0 +1,106 @@
+---
+title: "Day 6 - Red"
+author: "Kristen A, kkakey"
+date: "11/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(sf)
+library(foreach)
+```
+
+```{r}
+kwick_trip <- read_csv("raw-data/StoreList-KwikTripKwikStar.csv")
+wi_roads <- read_sf("raw-data/tl_2019_55_prisecroads/tl_2019_55_prisecroads.shp")
+mn_roads <- read_sf("raw-data/tl_2019_27_prisecroads/tl_2019_27_prisecroads.shp")
+io_roads <- read_sf("raw-data/tl_2019_19_prisecroads/tl_2019_19_prisecroads.shp")
+states <- read_sf("raw-data/cb_2018_us_state_500k/cb_2018_us_state_500k.shp")
+```
+
+### Geocode locations
+```{r}
+bGeoCode <- function(str, BingMapsKey){
+  require(RCurl)
+  require(RJSONIO)
+  u <- URLencode(paste0("http://dev.virtualearth.net/REST/v1/Locations?q=", str, "&maxResults=1&key=", BingMapsKey))
+  d <- getURL(u)
+  j <- fromJSON(d) 
+  if (j$resourceSets[[1]]$estimatedTotal > 0) {
+    formatted.address<-paste(j$resourceSets[[1]]$resources[[1]]$address,collapse=",")
+    entity.type<-j$resourceSets[[1]]$resources[[1]]$entityType
+    
+    confidence<-j$resourceSets[[1]]$resources[[1]]$confidence[1]
+    lat <- j$resourceSets[[1]]$resources[[1]]$point$coordinates[[1]]
+    lng <- j$resourceSets[[1]]$resources[[1]]$point$coordinates[[2]]
+  }
+  else {    
+    formatted.address<-"Unmatched"
+    entity.type<-"Unmatched"
+    confidence<- "Unmatched"
+    lat <- "Unmatched"
+    lng <- "Unmatched"
+    cbind(str,formatted.address,entity.type,confidence,lat,lng)
+  }
+  cbind(str,formatted.address,entity.type,confidence,lat,lng)
+}  
+
+# my API Key
+source("/Users/kristenakey/Desktop/R/api_key/bingmaps_key.R")
+
+to.geocode <- paste(kwick_trip$Address, kwick_trip$City, 
+                    kwick_trip$State, kwick_trip$Zip, sep=", ")
+
+
+geocoded.addresses<-foreach(a=to.geocode, .combine=rbind) %do% try(bGeoCode(a, my_key))
+### save geocoded addresses
+# write.csv(geocoded.addresses, file = "output-data/kwick_trip_geocoded.csv")
+```
+
+
+```{r}
+geocoded.addresses <- read_csv("output-data/kwick_trip_geocoded.csv")
+
+geocoded.addresses <- geocoded.addresses %>% 
+  as_tibble() %>%
+  filter(!is.na(lat), !is.na(lng))
+
+geocoded.addresses <- geocoded.addresses[geocoded.addresses$entity.type!="Error in j$resourceSets[[1]] : subscript out of bounds\n",]
+geocoded.addresses <- geocoded.addresses[geocoded.addresses$entity.type!="Unmatched",]
+
+geocoded_shp <- st_as_sf(geocoded.addresses, coords = c("lng", "lat"), crs= 4326, na.fail=T)
+
+```
+
+
+
+```{r}
+ggplot() +
+  geom_sf(data=states) +
+  geom_sf(data=wi_roads, size=.13) +
+  geom_sf(data=io_roads, size=.13) +
+  geom_sf(data=mn_roads, size=.13) +
+  geom_sf(data=geocoded_shp, aes(geometry=geometry),
+          size = .3, alpha = 0.42, color="#C8414A") +
+  theme_void() +
+  coord_sf(expand = T,  ylim = c(40.7, 49), xlim = c( -97, -87.2)) +
+  ggtitle("Kwick Trip\nLocations") +
+  theme(text = element_text(colour = "#C8414A", family="Roboto-BoldItalic"),
+        plot.title = element_text(vjust = -12, hjust = .85, size=20),
+        plot.caption = element_text(vjust = 13, hjust = .01, 
+                                    size=6, family="Roboto-Regular")) +
+  labs(caption = "@kkakey | Nov. 2020") +
+  ggsave("day6.png", dpi=950)
+```
+
+
+
+
+
+
+
