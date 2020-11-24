@@ -16,7 +16,7 @@ My contribution to [#30DayMapChallenge](https://github.com/tjukanovt/30DayMapCha
 </p>
 
 **************************************************************************************************
-#### Day 2 - [Points](https://github.com/kkakey/30DayMapChallenge/blob/main/day2-lines/day2-final.Rmd) 
+#### Day 2 - [Lines](https://github.com/kkakey/30DayMapChallenge/blob/main/day2-lines/day2-final.Rmd) 
 
 ![](https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/day2-lines/budapest-title.png)
 
