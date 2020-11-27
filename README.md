@@ -42,3 +42,8 @@ Budapest buildings
 #### Day 6 - [Red](https://github.com/kkakey/30DayMapChallenge/blob/main/day6-red/day6-red.Rmd) 
 
 ![](https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/day6-red/day6.png)
+
+**************************************************************************************************
+#### Day 7 - [Green](https://github.com/kkakey/30DayMapChallenge/blob/main/day7-green/day7-green.Rmd) 
+
+![](https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/day7-green/day7.png)
