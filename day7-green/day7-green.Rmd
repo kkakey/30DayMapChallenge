@@ -1,0 +1,53 @@
+---
+title: "Day 7 - Green"
+author: "Kristen A, kkakey"
+date: "11/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(sf)
+```
+
+```{r}
+space <- read_sf("./raw-data/Open_Space-shp/Open_Space.shp", crs = 4326)
+boston <- read_sf("raw-data/City_of_Boston_Boundary-shp/City_of_Boston_Boundary_4326.shp", crs = 4326)
+buildings <- read_sf("raw-data/Boston_Buildings-shp/Boston_Buildings_4326.shp", crs = 4326)
+```
+
+```{r}
+st_crs(buildings)==st_crs(space)
+
+buildings <- buildings %>% st_set_crs(4326)
+boston <- boston %>% st_set_crs(4326)
+space <- space %>% st_set_crs(4326)
+```
+
+
+```{r}
+ggplot() +
+  geom_sf(data=boston, color=NA) +
+  geom_sf(data=buildings, fill="grey", color="black", size=.01) +
+  geom_sf(data=space, color="#126814", fill="#136d15") +
+  coord_sf(xlim=c(-71.075, -71.045), ylim=c(42.35, 42.371),expand=T) +
+  theme_void() +
+  ggtitle("Open Space\nin Boston") +
+  theme(text = element_text(family="Pompelmus Healthy DEMO"),
+        plot.title = element_text(vjust=-12.5, hjust=.15,
+                                  color="#268b07", size=19),
+        plot.background = element_rect(fill="#333333"),
+        plot.caption = element_text(vjust = 13, hjust = .995, size=6)) +
+  labs(caption = "Data: Analyze Boston\n@kkakey") +
+  ggsave("day7.png",dpi=600)
+```
+
+
+
+
+
+
