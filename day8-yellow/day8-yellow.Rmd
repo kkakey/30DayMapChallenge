@@ -1,0 +1,217 @@
+---
+title: "Day 8 - Yellow"
+author: "Kristen A, kkakey"
+date: "11/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(tidyverse)
+library(sf)
+library(foreach)
+library(emojifont)
+```
+
+
+### Clean data
+
+Data extracted from ['Traveler's Guide to America's Dairyland'](http://www.milwaukeeindependent.com/wp-content/uploads/2017/04/WisconsinCheeseMap.pdf) using [Tabula](https://tabula.technology)
+```{r}
+df <- read_csv("raw-data/tabula-WisconsinCheeseMap.csv", col_names=F)
+```
+
+```{r extract addresses}
+df_row <- c(as.vector(df$X1[!is.na(df$X1)]), as.vector(df$X2[!is.na(df$X2)]), as.vector(df$X3[!is.na(df$X3)]))
+addresses_raw <- df_row[which(grepl(pattern="[[:digit:]])", x = df_row))+1]
+
+fix_later <- addresses_raw[which(grepl(pattern="www", x = addresses_raw))]
+fix_later_ind <- which(grepl(pattern="www", x = addresses_raw))
+
+addresses <- addresses_raw[!grepl(pattern="www", x = addresses_raw)]
+addresses <- gsub(" Ph:..*","",addresses)
+addresses <- addresses[c(1:74,76:161)]
+add <- c("W3115 Jay Rd., Belgium, WI", "598 Seagull Dr., Mosinee, WI 54455", 
+         "915 N. Hwy. 141, Crivitz, WI 54114",
+        "1401 Hwy. 23 N., Dodgeville, WI", "529 First St., New Glarus, WI 53575", 
+        "554 1st St., New Glarus, WI 53574", "S2244 Langaard Lane, Westby, WI 54667",
+        "420 Broadway St., Wisconsin Dells, WI 53965", "West Allis,WI 53219")
+
+addresses <- c(addresses, add)
+```
+
+```{r geocode}
+bGeoCode <- function(str, BingMapsKey){
+  require(RCurl)
+  require(RJSONIO)
+  u <- URLencode(paste0("http://dev.virtualearth.net/REST/v1/Locations?q=", str, "&maxResults=1&key=", BingMapsKey))
+  d <- getURL(u)
+  j <- fromJSON(d) 
+  if (j$resourceSets[[1]]$estimatedTotal > 0) {
+    formatted.address<-paste(j$resourceSets[[1]]$resources[[1]]$address,collapse=",")
+    entity.type<-j$resourceSets[[1]]$resources[[1]]$entityType
+    
+    confidence<-j$resourceSets[[1]]$resources[[1]]$confidence[1]
+    lat <- j$resourceSets[[1]]$resources[[1]]$point$coordinates[[1]]
+    lng <- j$resourceSets[[1]]$resources[[1]]$point$coordinates[[2]]
+  }
+  else {    
+    formatted.address<-"Unmatched"
+    entity.type<-"Unmatched"
+    confidence<- "Unmatched"
+    lat <- "Unmatched"
+    lng <- "Unmatched"
+    cbind(str,formatted.address,entity.type,confidence,lat,lng)
+  }
+  cbind(str,formatted.address,entity.type,confidence,lat,lng)
+}  
+
+# my API Key
+source("/Users/kristenakey/Desktop/R/api_key/bingmaps_key.R")
+
+# remove suite number for geocoding
+addresses[142] <- "1810 Webster St., Hudson, WI 54016"
+
+geocoded.addresses<-foreach(a=addresses, .combine=rbind) %do% try(bGeoCode(a, my_key))
+### save geocoded addresses
+# write.csv(geocoded.addresses, file = "output-data/cheese_factories_geocoded.csv")
+```
+
+
+```{r}
+geocoded.addresses <- read_csv("output-data/cheese_factories_geocoded.csv")
+
+geocoded_shp <- st_as_sf(geocoded.addresses, coords = c("lng", "lat"), crs= 4326, na.fail=T)
+```
+
+
+```{r}
+counties <- read_sf("raw-data/cb_2018_us_county_5m/cb_2018_us_county_5m.shp", crs= 4326)
+roads <- read_sf("raw-data/tl_2019_55_prisecroads/tl_2019_55_prisecroads.shp")
+
+counties <- counties %>%
+  filter(STATEFP=="55")
+
+roads <- roads %>%
+  filter(RTTYP=="U")
+
+
+counties_joined <- counties %>%
+  st_join(.,geocoded_shp) %>%
+  group_by(COUNTYFP) %>%
+  mutate(cheese_count = n()) %>%
+  ungroup() %>%
+  distinct(COUNTYFP, .keep_all = T)
+
+sf_cent <- st_centroid(counties_joined)
+```
+
+
+```{r}
+## font from: https://www.fontspace.com/snow-fairy-font-f41463
+library(showtext)
+font_add("Snow-Fairy", "/Users/kristenakey/Library/Fonts/SnowFairy-8MMm2.otf")  
+showtext_auto()
+```
+
+
+```{r}
+states <- read_sf("raw-data/cb_2018_us_state_500k/cb_2018_us_state_500k.shp", crs= 4326)
+states <- states[states$STUSPS%in%c("IL", "IA", "MN", "MI"),]
+
+
+sf_cent_ll <- extract(sf_cent, geometry, into = c('x', 'y'), '\\((.*),(.*)\\)', conv = T)
+sf_cent_ll <- sf_cent_ll[c(1:9,11:19)]
+
+wi_backgroud <- "#707C50"
+cheese_color <- "#FFD867"
+
+ggplot() +
+  geom_sf(data=states, fill="#002900", color="grey20", size=.3) +
+  geom_sf(data=counties, color="darkgreen", fill="darkgreen") +
+  geom_sf(data=roads, size=.1) +
+  geom_text(data=sf_cent_ll, family="EmojiOne", 
+              aes(x,y, size=cheese_count), color=cheese_color,
+            fill=cheese_color,
+            label=emoji('cheese')) +
+    geom_text(data=sf_cent_ll, family="EmojiOne",
+              aes(x,y, size=cheese_count), color=cheese_color,
+            fill=cheese_color,
+            label=emoji('cheese')) +
+    geom_text(data=sf_cent_ll, family="EmojiOne",
+              aes(x,y, size=cheese_count), color=cheese_color,
+            fill=cheese_color,
+            label=emoji('cheese')) +
+  geom_text(data=sf_cent_ll, family="EmojiOne",
+            aes(x,y, size=cheese_count), color=cheese_color,
+            fill=cheese_color,
+            label=emoji('cheese')) +
+  theme_void() +
+  scale_size_continuous(range = c(5, 10)) +
+  coord_sf(expand = T,  ylim = c(42.5, 47), xlim = c( -93, -87)) +
+  theme(text = element_text(family="Snow-Fairy",color="white"),
+        panel.background = element_rect(fill = '#7E8DA6', colour = '#7E8DA6'),
+        plot.title = element_text(vjust=-11.5, hjust=.95,
+                                  size=18),
+        legend.position = c(.3,0),
+        legend.justification = c(.9,-.45),
+        legend.direction="horizontal") +
+  ggtitle("Where's the Cheese?") +
+  guides(size = guide_legend(title = "Cheese factories\n  by county", title.position = "top",
+                             title.vjust = -2, size=6)) +
+  ggsave("county_cheese.png", dpi=950)
+
+
+```
+
+
+```{r}
+geocoded_shp_ll <- extract(geocoded_shp, geometry, 
+                           into = c('x', 'y'), '\\((.*),(.*)\\)', conv = T)
+geocoded_shp_ll <- geocoded_shp_ll[c(1:5,7:9)]
+
+wi_backgroud <- "#707C50"
+cheese_color <- "#FFD867"
+
+
+ggplot() +
+  geom_sf(data=states, fill="#002900", color="grey20", size=.3) +
+  geom_sf(data=counties, color="darkgreen", fill="darkgreen") +
+  geom_sf(data=roads, size=.1) +
+  geom_text(data=geocoded_shp_ll, family="EmojiOne", 
+              aes(x,y), color=cheese_color,
+            fill=cheese_color,
+            label=emoji('cheese')) +
+    geom_text(data=geocoded_shp_ll, family="EmojiOne",
+              aes(x,y), color=cheese_color,
+            fill=cheese_color,
+            label=emoji('cheese')) +
+  geom_text(data=geocoded_shp_ll, family="EmojiOne", 
+              aes(x,y), color=cheese_color,
+            fill=cheese_color,
+            label=emoji('cheese')) +
+  geom_text(data=geocoded_shp_ll, family="EmojiOne", 
+              aes(x,y), color=cheese_color,
+            fill=cheese_color,
+            label=emoji('cheese')) +
+  theme_void() +
+  scale_size_continuous(range = c(5, 10)) +
+  coord_sf(expand = T,  ylim = c(42.5, 47), xlim = c( -93, -87)) +
+  theme(text = element_text(family="Snow-Fairy",color="white"),
+        panel.background = element_rect(fill = '#7E8DA6', colour = '#7E8DA6'),
+        plot.title = element_text(vjust=-11.5, hjust=.95,
+                                  size=18),
+        plot.subtitle = element_text(vjust=-14, hjust=.95,
+                                    size=14)
+        ) +
+  ggtitle("Where's the Cheese?") +
+  labs(subtitle="Cheese Factories in WI") +
+  ggsave("all_cheese.png", dpi=950)
+```
+
+
+
