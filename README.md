@@ -47,3 +47,11 @@ Budapest buildings
 #### Day 7 - [Green](https://github.com/kkakey/30DayMapChallenge/blob/main/day7-green/day7-green.Rmd) 
 
 ![](https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/day7-green/day7.png)
+
+
+**************************************************************************************************
+#### Day 7 - [Yellow](https://github.com/kkakey/30DayMapChallenge/blob/main/day8-yellow/day8-yellow.Rmd) 
+
+![](https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/day8-yellow/county_cheese.png)
+
+![](https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/day8-yellow/all_cheese.png)
