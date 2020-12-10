@@ -50,8 +50,21 @@ Budapest buildings
 
 
 **************************************************************************************************
-#### Day 7 - [Yellow](https://github.com/kkakey/30DayMapChallenge/blob/main/day8-yellow/day8-yellow.Rmd) 
+#### Day 8 - [Yellow](https://github.com/kkakey/30DayMapChallenge/blob/main/day8-yellow/day8-yellow.Rmd) 
 
 ![](https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/day8-yellow/county_cheese.png)
 
 ![](https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/day8-yellow/all_cheese.png)
+
+
+**************************************************************************************************
+#### Day 9 - Monochrome
+2020 population density of Hungary. 
+
+Made in Aeriold following [this](http://www.statsmapsnpix.com/2020/11/how-to-make-3d-population-density.html) tutorial.
+
+![](https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/day9-monochrome/plot1.png)
+
+
+
+
