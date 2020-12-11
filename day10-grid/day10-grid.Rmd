@@ -1,0 +1,79 @@
+---
+title: "day10-grid"
+author: "Kristen A, kkakey"
+date: "11/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(sf)
+```
+
+```{r}
+manh <- read_sf("output-data/manhattan_rotate.shp")
+manh_spdf <- as(manh, "Spatial")
+```
+
+```{r}
+### https://rpubs.com/geospacedman/rotatespatial
+rotateProj = function(spobj, angle) {
+    library(sp)
+    # get bounding box as spatial points object
+    boxpts = SpatialPoints(t(bbox(spobj)), proj4string = CRS(proj4string(spobj)))
+    # convert to lat-long
+    boxLL = bbox(spTransform(boxpts, CRS("+init=epsg:4326")))
+    # find the centre
+    llc = apply(boxLL, 1, mean)
+    # construct the proj4 string
+    prj = paste0("+proj=omerc +lat_0=", llc[2], " +lonc=", llc[1], " +alpha=", 
+        angle, " +gamma=0.0 +k=1.000000 +x_0=0.000 +y_0=0.000 +ellps=WGS84 +units=m ")
+    # return as a CRS:
+    CRS(prj)
+}
+
+# get the proj4 string
+regionProj = rotateProj(manh_spdf, 28.8)
+
+# transform
+regionR = spTransform(manh_spdf, regionProj)
+
+manhattan <- st_as_sf(regionR, crs = 2263)
+st_crs(manhattan) <- 2263
+```
+
+```{r}
+ggplot() +
+  geom_sf(data=manhattan, size=.17, color="#6B2B06") +
+  theme_void() +
+  theme(plot.background = element_rect(fill="#FF9505"),
+        panel.background = element_rect(fill="#FF9505", color=NA),
+        plot.margin = unit(c(t=0,r=8,b=0,l=8), "cm")) +
+  ggsave("simple.png", width=8, height=7)
+  
+
+
+library(ggtext)
+## font: https://fonts.google.com/specimen/Balthazar
+## inspiried by: https://github.com/darwinanddavis/worldmaps/blob/gh-pages/img/day10.jpg
+ggplot() +
+  geom_sf(data=manhattan, size=.17, color="#6B2B06") +
+  theme_void() +
+  coord_sf(clip = "off") +
+  theme(plot.background = element_rect(fill="#FF9505", color=NA),
+        panel.background = element_rect(fill="#FF9505", color=NA),
+        plot.margin = unit(c(t=0,r=8,b=0,l=8), "cm")) +
+  geom_richtext(aes(x=-2000,y=-1015.72,angle=90, label="NEW YORK",
+                    family="Balthazar-Regular"), 
+                fill = NA, label.color = NA, size=8, color="#4D1F04") +
+  geom_richtext(aes(x=4700,y=-8015.72,angle=-90, 
+                    label="**40° 71' 28'' N <br> 74° 00' 60'' W**",
+                    family="Balthazar-Regular"), 
+                fill = NA, label.color = NA, size=3, color="#4D1F04") +
+  ggsave("ny_map.png", width=8, height=9)
+```
+
