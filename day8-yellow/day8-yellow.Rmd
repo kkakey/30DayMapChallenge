@@ -214,4 +214,102 @@ ggplot() +
 ```
 
 
+************************************************************************************************
+maps with green background
+
+```{r}
+states <- read_sf("raw-data/cb_2018_us_state_500k/cb_2018_us_state_500k.shp", crs= 4326)
+states <- states[states$STUSPS%in%c("IL", "IA", "MN", "MI"),]
+
+
+sf_cent_ll <- extract(sf_cent, geometry, into = c('x', 'y'), '\\((.*),(.*)\\)', conv = T)
+sf_cent_ll <- sf_cent_ll[c(1:9,11:19)]
+
+wi_backgroud <- "#707C50"
+cheese_color <- "#FFD867"
+
+ggplot() +
+  geom_sf(data=states, fill="#002900", color="grey20", size=.3) +
+  geom_sf(data=counties, color="darkgreen", fill="darkgreen") +
+  geom_sf(data=roads, size=.1) +
+  geom_text(data=sf_cent_ll, family="EmojiOne", 
+              aes(x,y, size=cheese_count), color=cheese_color,
+            fill=cheese_color,
+            label=emoji('cheese')) +
+    geom_text(data=sf_cent_ll, family="EmojiOne",
+              aes(x,y, size=cheese_count), color=cheese_color,
+            fill=cheese_color,
+            label=emoji('cheese')) +
+    geom_text(data=sf_cent_ll, family="EmojiOne",
+              aes(x,y, size=cheese_count), color=cheese_color,
+            fill=cheese_color,
+            label=emoji('cheese')) +
+  geom_text(data=sf_cent_ll, family="EmojiOne",
+            aes(x,y, size=cheese_count), color=cheese_color,
+            fill=cheese_color,
+            label=emoji('cheese')) +
+  theme_void() +
+  scale_size_continuous(range = c(5, 10)) +
+  coord_sf(expand = T,  ylim = c(42.5, 47), xlim = c( -93, -87)) +
+  theme(text = element_text(family="Snow-Fairy",color="white"),
+        panel.background = element_rect(fill = '#7E8DA6', colour = '#7E8DA6'),
+        plot.title = element_text(vjust=-11.5, hjust=.95,
+                                  size=18),
+        legend.position = c(.3,0),
+        legend.justification = c(.9,-.45),
+        legend.direction="horizontal") +
+  ggtitle("Where's the Cheese?") +
+  guides(size = guide_legend(title = "Cheese factories\n  by county", title.position = "top",
+                             title.vjust = -2, size=6)) +
+  ggsave("county_cheese.png", dpi=950)
+
+
+```
+
+
+```{r}
+geocoded_shp_ll <- extract(geocoded_shp, geometry, 
+                           into = c('x', 'y'), '\\((.*),(.*)\\)', conv = T)
+geocoded_shp_ll <- geocoded_shp_ll[c(1:5,7:9)]
+
+wi_backgroud <- "#707C50"
+cheese_color <- "#FFD867"
+
+
+ggplot() +
+  geom_sf(data=states, fill="#002900", color="grey20", size=.3) +
+  geom_sf(data=counties, color="darkgreen", fill="darkgreen") +
+  geom_sf(data=roads, size=.1) +
+  geom_text(data=geocoded_shp_ll, family="EmojiOne", 
+              aes(x,y), color=cheese_color,
+            fill=cheese_color,
+            label=emoji('cheese')) +
+    geom_text(data=geocoded_shp_ll, family="EmojiOne",
+              aes(x,y), color=cheese_color,
+            fill=cheese_color,
+            label=emoji('cheese')) +
+  geom_text(data=geocoded_shp_ll, family="EmojiOne", 
+              aes(x,y), color=cheese_color,
+            fill=cheese_color,
+            label=emoji('cheese')) +
+  geom_text(data=geocoded_shp_ll, family="EmojiOne", 
+              aes(x,y), color=cheese_color,
+            fill=cheese_color,
+            label=emoji('cheese')) +
+  theme_void() +
+  scale_size_continuous(range = c(5, 10)) +
+  coord_sf(expand = T,  ylim = c(42.5, 47), xlim = c( -93, -87)) +
+  theme(text = element_text(family="Snow-Fairy",color="white"),
+        panel.background = element_rect(fill = '#7E8DA6', colour = '#7E8DA6'),
+        plot.title = element_text(vjust=-11.5, hjust=.95,
+                                  size=18),
+        plot.subtitle = element_text(vjust=-14, hjust=.95,
+                                    size=14)
+        ) +
+  ggtitle("Where's the Cheese?") +
+  labs(subtitle="Cheese Factories in WI") +
+  ggsave("all_cheese.png", dpi=950)
+```
+
+
 
