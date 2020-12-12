@@ -52,8 +52,6 @@ Budapest buildings
 **************************************************************************************************
 #### Day 8 - [Yellow](https://github.com/kkakey/30DayMapChallenge/blob/main/day8-yellow/day8-yellow.Rmd) 
 
-![](https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/day8-yellow/county_cheese.png)
-
 ![](https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/day8-yellow/all_cheese.png)
 
 
@@ -65,6 +63,9 @@ Made in Aeriold following [this](http://www.statsmapsnpix.com/2020/11/how-to-mak
 
 ![](https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/day9-monochrome/plot1.png)
 
+**************************************************************************************************
+#### Day 10 - [Grid](https://github.com/kkakey/30DayMapChallenge/blob/main/day10-grid/day10-grid.Rmd) 
 
+![](https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/day10-grid/ny_map.png)
 
 
