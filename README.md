@@ -68,4 +68,7 @@ Made in Aeriold following [this](http://www.statsmapsnpix.com/2020/11/how-to-mak
 
 ![](https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/day10-grid/ny_map.png)
 
+**************************************************************************************************
+#### Day 11 - [3D](https://github.com/kkakey/30DayMapChallenge/blob/main/day11-3D/day11-3D.Rmd) 
 
+![](https://github.com/kkakey/30DayMapChallenge/blob/main/day11-3D/gif_logged.gif)
