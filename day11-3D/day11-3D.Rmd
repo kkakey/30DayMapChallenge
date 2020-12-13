@@ -1,0 +1,102 @@
+---
+title: "day11-3d"
+author: "Kristen A, kkakey"
+date: "12/12/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# install.packages("devtools")
+# devtools::install_github("tylermorganwall/rayshader")
+library(rayshader)
+library(tidyverse)
+library(sf)
+library(av)
+```
+
+```{r}
+## WORKAROUND: https://github.com/rstudio/rstudio/issues/6692
+## Revert to 'sequential' setup of PSOCK cluster in RStudio v1.3.959 or lower on macOS with R v4.0.0 or higher
+library(rstudioapi)
+if (Sys.getenv("RSTUDIO") == "1" && !nzchar(Sys.getenv("RSTUDIO_TERM")) &&
+    Sys.info()["sysname"] == "Darwin" && getRversion() >= "4.0.0") {
+    if(versionInfo()$version < "1.3.1056"){
+	parallel:::setDefaultClusterOptions(setup_strategy = "sequential")
+}
+}
+```
+
+```{r}
+wi_counties <- read_sf("./raw-data/County_Boundaries_24K-shp/County_Boundaries_24K.shp")
+data <- read_csv("./raw-data/CountybyCountyReport-2020_president.csv")
+
+data <- data %>%
+  filter(!is.na(County), County!="Office Totals:") %>%
+  select(County, `Total Votes Cast`, DEM, REP) %>%
+  mutate(DEM = as.numeric(gsub(",","",DEM)),
+         REP = as.numeric(gsub(",","",REP)))
+data[data$County=="ST. CROIX",]$County <- "SAINT CROIX"
+
+wi_counties <- wi_counties %>%
+  mutate(County = toupper(COUNTY_NAM)) %>%
+  left_join(., data, by="County")
+```
+
+```{r}
+gg_wi <- ggplot(wi_counties) +
+  geom_sf(aes(fill = `Total Votes Cast`)) +
+  # scale_fill_viridis("Votes Cast") +
+  scale_fill_gradient(
+      low = "#42034F",
+      high = "#EC9DFB",
+      na.value = "grey50",
+      guide = "colourbar",
+      aesthetics = "fill",
+      name = "Votes Cast"
+    ) +
+  ggtitle("Total Votes Cast for President in Wisconsin, 2020") +
+  theme_bw() +
+  theme(text = element_text(family = "Times"))
+
+plot_gg(gg_wi, multicore = TRUE, width = 6 ,height=6, fov = 70, scale=350)
+render_depth(focallength=100,focus=0.72)
+
+plot_gg(gg_wi, multicore = TRUE, width = 6 ,height=6, fov = 70, scale = 300, zoom=.62)
+# render_depth(focallength=100,focus=0.72)
+# render_snapshot(filename = "snapshot3.png")
+render_movie("gg_wi2.mp4",frames = 720, fps=60,zoom=0.6,fov = 60)
+```
+
+
+```{r}
+gg_wi_log <- ggplot(wi_counties) +
+  geom_sf(aes(fill = log(`Total Votes Cast`))) +
+  scale_fill_gradient(
+      low = "#42034F",
+      high = "#EC9DFB",
+      na.value = "grey50",
+      guide = "colourbar",
+      aesthetics = "fill",
+      name = "Votes Cast"
+    ) +
+  ggtitle("Total Logged Votes Cast for President in Wisconsin, 2020") +
+  theme_bw() +
+  theme(text = element_text(family = "Times"))
+
+plot_gg(gg_wi_log, multicore = TRUE, width = 6 ,height=6, fov = 70, scale=350, zoom=.62)
+# render_depth(focallength=100,focus=0.72, zoom=.6)
+render_snapshot(filename="logged_wi_20203.png")
+render_movie("gg_wi_log2.mp4",frames = 720, fps=60,zoom=0.6,fov = 30,
+             type='oscillate')
+
+```
+
+
+
+
+
+
