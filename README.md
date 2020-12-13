@@ -71,4 +71,5 @@ Made in Aeriold following [this](http://www.statsmapsnpix.com/2020/11/how-to-mak
 **************************************************************************************************
 #### Day 11 - [3D](https://github.com/kkakey/30DayMapChallenge/blob/main/day11-3D/day11-3D.Rmd) 
 
+Total Logged Votes Cast for President in Wisconsin, 2020
 ![](https://github.com/kkakey/30DayMapChallenge/blob/main/day11-3D/gif_logged.gif)
