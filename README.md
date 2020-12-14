@@ -73,3 +73,9 @@ Made in Aeriold following [this](http://www.statsmapsnpix.com/2020/11/how-to-mak
 
 Total Logged Votes Cast for President in Wisconsin, 2020
 ![](https://github.com/kkakey/30DayMapChallenge/blob/main/day11-3D/gif_logged.gif)
+
+**************************************************************************************************
+#### Day 13 - [Raster](https://github.com/kkakey/30DayMapChallenge/blob/main/day13-raster/day13-raster.Rmd) 
+
+Earth at night
+![](https://raw.githubusercontent.com/kkakey/30DayMapChallenge/blob/main/day13-raster/plot1.png)
