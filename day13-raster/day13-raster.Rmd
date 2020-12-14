@@ -1,0 +1,30 @@
+---
+title: "day13-raster"
+author: "Kristen A, kkakey"
+date: "11/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(raster)
+library(rasterVis)
+library(colorspace)
+
+# load raster data
+df <- raster(x = "raw-data/BlackMarble_2016_01deg_geo.tif")
+dfr <- rasterToPoints(df) %>% as.data.frame()
+```
+
+Data source: [Earth at Night: Flat Maps](https://earthobservatory.nasa.gov/features/NightLights/page3.php)
+
+```{r}
+gplot(df) +  
+  geom_tile(aes(fill=factor(value),alpha=0.8)) + 
+  coord_equal()
+```
+
