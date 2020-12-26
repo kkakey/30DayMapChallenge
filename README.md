@@ -79,3 +79,13 @@ Total Logged Votes Cast for President in Wisconsin, 2020
 
 Earth at night
 ![](https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/day13-raster/plot1-high_res.png)
+
+**************************************************************************************************
+#### Day 14 - [Climate Change](https://github.com/kkakey/30DayMapChallenge/blob/main/day14-climate_change/day14-climate_change.Rmd) 
+
+![](https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/day14-climate_change/drought.gif)
+
+**************************************************************************************************
+#### Day 15 - [Connections](https://github.com/kkakey/30DayMapChallenge/blob/main/day15-connections/day15.Rmd) 
+
+![](https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/day15-connections/plot.png)
