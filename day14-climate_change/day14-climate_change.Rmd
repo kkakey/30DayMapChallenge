@@ -1,0 +1,85 @@
+---
+title: "day14-climate_change"
+author: "Kristen A, kkakey"
+date: "11/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(sf)
+library(RColorBrewer)
+library(animation)
+states <- read_sf("output-data/cb_2018_us_state_500k/cb_2018_us_state_500k.shp", crs=2163)
+states <- states[!(states$STUSPS %in% c("AK", "HI")),]
+```
+
+Data: [United States Drought Monitor](https://droughtmonitor.unl.edu/Data/GISData.aspx)
+
+```{r}
+# iterate through files and import and bind all shapefiles
+library(data.table)
+files <- list.files(path = "./raw-data/", full.names = T, recursive = T, pattern = ".shp")
+files <- files[str_sub(files, start= -3)=="shp"]
+
+full_shp <- c()
+for (f in files) {
+  filename <- str_sub(f, start= -10, end=-9)
+  month <- str_sub(f, -8,-7)
+  day <- str_sub(f, -6,-5)
+  filenamefull <- paste0("shp_", filename)
+  filenamefull <- read_sf(f) 
+  filenamefull <- cbind(filenamefull, year=rep(filename,nrow(filenamefull)),
+                       month=rep(month,nrow(filenamefull)),
+                       day=rep(day,nrow(filenamefull)))
+
+  full_shp <- rbind(full_shp, filenamefull)
+}
+# st_write(full_shp, "output-data/full_shp_20-10-2.shp")
+```
+
+```{r}
+# convert crs in QGIS
+drought_dec <- read_sf("output-data/drought_dec20-10-final.shp", crs=2163)
+drought_dec <- drought_dec %>%
+  arrange(year, month, day)
+```
+
+```{r}
+d <- drought_dec %>%
+  as.data.frame() %>%
+  select(year, month, day) %>%
+  distinct()
+
+# Animation
+saveGIF({
+  for(i in seq_len(nrow(d))) {
+    
+  plot <- ggplot() +
+  geom_sf(data=states, size=.3, fill="grey80", color="grey60") +
+  geom_sf(data=drought_dec[drought_dec$year==d[i,][[1]] & drought_dec$month==d[i,][[2]] & drought_dec$day==d[i,][[3]],], 
+          aes(fill=as.factor(DM), color=as.factor(DM))) +
+  theme_void() +
+  scale_fill_brewer(palette = "OrRd") + scale_color_brewer(palette = "OrRd") +
+  theme(legend.position = "none", text = element_text(family="Oxygen"),
+        plot.title = element_text(hjust =.1), plot.subtitle = element_text(hjust =.1),
+        plot.caption = element_text(hjust=.8, size=6, vjust=5)) +
+  labs(title = "U.S Drought", subtitle=paste0(as.character(d[i,][[2]]),
+                                              # "-",as.character(d[i,][[3]]),
+                                              "-20",
+                                              as.character(d[i,][[1]])),
+       caption = "Data: United States Drought Monitor")
+    print(plot)
+  }
+}, movie.name="drought.gif", ani.width = 1200, ani.height = 1200,
+  interval = 0.2, ani.res=300, end_pause = 20)
+```
+
+
+
+
+
