@@ -1,0 +1,59 @@
+---
+title: "day15-connections"
+author: "Kristen A, kkakey"
+date: "11/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(sf)
+```
+
+```{r}
+stations <- read_sf("raw-data/DOITT_SUBWAY_STATION_04JAN2017/DOITT_SUBWAY_STATION_04JAN2017.shp",
+                    crs=2263)
+stat_lines <- read_sf("raw-data/DOITT_SUBWAY_LINE_04JAN2017/DOITT_SUBWAY_LINE_04JAN2017.shp", crs=2263)
+```
+
+```{r}
+# count number of connections per station
+spl <- strsplit(stations$LINE, split="-")
+spl_count <- unlist(lapply(spl, length))
+stations <- cbind(stations, spl_count)
+
+# stations <- stations %>%
+#   as.data.frame() %>%
+#   group_by(NAME) %>%
+#   summarise(tot_count = sum(spl_count)) %>%
+#   left_join(., stations, by="NAME")
+```
+
+```{r}
+ggplot() +
+  geom_sf(data=stat_lines, size=.07) +
+  geom_sf(data=stations, aes(geometry=geometry, size=spl_count, 
+                             fill=as.factor(spl_count)), pch=21, colour="grey40") +
+  ggtitle("Transit Connections") +
+  labs(subtitle = "New York City", caption = "Data: NYC Open Data\n@kkakey") +
+  scale_fill_brewer(palette = "Reds") +
+  theme_void() +
+  scale_size(range = c(0, 1.2)) +
+  theme(legend.position = "none",
+        text = element_text(family = "Transit-Normal"),
+        plot.title = element_text(vjust=-35, hjust=-.2, size=8.5),
+        plot.subtitle = element_text(vjust=-42, hjust=-.1, size=6.5),
+        plot.caption = element_text(size=3, vjust = 37),
+        plot.background = element_rect(color = NA, fill="#EEE0CB"),
+        panel.background = element_rect(color = NA, fill="#EEE0CB"),
+        plot.margin = unit(c(t=3,r=3,b=3,l=3), "cm")) +
+  ggsave("plot.png", dpi=1600)
+
+```
+
+
+
