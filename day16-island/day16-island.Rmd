@@ -1,0 +1,57 @@
+---
+title: "day16-island"
+author: "Kristen A, kkakey"
+date: "11/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(sf)
+library(raster)
+```
+
+Data from: https://www2.jpl.nasa.gov/srtm/africa_radar_images.htm#PIA04965
+
+```{r}
+mad <- read_sf("raw-data/madagascar.shp", crs=29738)
+df <- raster(x = "raw-data/PIA04965.tif")
+dfr <- rasterToPoints(df) %>% as.data.frame()
+dfr = st_as_sf(dfr, coords = c("x", "y"), crs= "EPSG:29738")
+```
+
+
+```{r}
+ggplot() +
+  geom_sf(data=dfr, aes(color=PIA04965)) +
+  scale_color_gradient(
+      low = "#DFF6F4",
+      high = "#0D302D",
+      na.value = "grey50",
+      guide = "colourbar"
+    ) +
+  theme_void() +
+  theme(legend.position = "none") +
+  annotate("text",label="Madagascar", x=700, y=1000, 
+           size=4.5, family = "2Peas Squish", color="black") +
+  annotate("text",label="mozambique channel", x=350, y=1500, 
+           size=2.5, family = "2Peas Squish", color="black") +
+  annotate("text",label="indian ocean", x=1050, y=500, 
+           size=2.5, family = "2Peas Squish", color="black") +
+  ggsave("plot.png", dpi=900)
+```
+
+
+
+
+```{r}
+ggplot(data = dfr,
+  aes(x = x, y = y, fill = PIA04965)) +
+  geom_raster() +
+  theme_void()
+```
+
