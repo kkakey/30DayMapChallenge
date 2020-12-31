@@ -89,3 +89,13 @@ Earth at night
 #### Day 15 - [Connections](https://github.com/kkakey/30DayMapChallenge/blob/main/day15-connections/day15.Rmd) 
 
 ![](https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/day15-connections/plot.png)
+
+**************************************************************************************************
+#### Day 16 - [Island(s)](https://github.com/kkakey/30DayMapChallenge/blob/main/day16-island/day16-island.Rmd) 
+
+![](https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/day16-island/plot.png)
+
+**************************************************************************************************
+#### Day 17 - [Island(s)](https://github.com/kkakey/30DayMapChallenge/blob/main/day17-historical/day17-historical.Rmd) 
+
+![](https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/day17-historical/railroads.gif)
