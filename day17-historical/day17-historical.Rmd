@@ -1,0 +1,101 @@
+---
+title: "day17-historical"
+author: "Kristen A, kkakey"
+date: "12/27/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Data from: [Railroads and the Making of Modern America A Digital History Project](http://railroads.unl.edu/shared/resources/USrailshps.zip)
+
+
+```{r}
+library(tidyverse)
+library(sf)
+```
+
+```{r}
+states <- read_sf("output-data/cb_2018_us_state_500k/cb_2018_us_state_500k.shp",
+                  crs=2163)
+states <- states %>% filter(STUSPS!="HI", STUSPS!="AK")
+world <- read_sf("raw-data/World.shp", crs=2163)
+world <- world %>% filter(CONTINENT=="North America")
+```
+
+```{r}
+# iterate through files and import and bind all shapefiles
+library(data.table)
+files <- list.files(path = "./raw-data/", full.names = T, recursive = T, pattern = ".shp")
+files <- files[str_sub(files, start= -3)=="shp"]
+full_shp <- c()
+for (f in files) {
+  filename <- str_sub(f, start= 26, end=29)
+  year <- str_sub(f, start= 26, end=29)
+  filenamefull <- paste0("shp_", filename)
+  filenamefull <- read_sf(f) 
+  filenamefull <- cbind(filenamefull, year=rep(filename,nrow(filenamefull)),
+                       year=rep(year,nrow(filenamefull)))
+  filenamefull <- filenamefull %>%
+    select(geometry, year, RROWNER1, STATE)
+  full_shp <- rbind(full_shp, filenamefull)
+}
+# st_write(full_shp, "output-data/full_shp.shp")
+```
+
+```{r}
+full_shp <- read_sf("output-data/full_shp.shp")
+```
+
+```{r}
+## static plot
+# ggplot() +
+#   geom_sf(data=world, fill="#251E18", color="grey40", size=.2) +
+#   geom_sf(data=states, size=.2, fill="#3D3229", color="grey40") +
+#   geom_sf(data=full_shp[full_shp$year=="1855",], color="#D4D4ED", size=.3) +       
+#   coord_sf(expand = F,ylim = c( -2216975.585964092,882352.1693851782),
+#            xlim=c(-2131905.045865443, 2616373.8336742707)) +
+#   theme_void() +
+#   theme(plot.background = element_rect(fill="#A5CBC3", color=NA),
+#         panel.background = element_rect(fill="#A5CBC3", color=NA),
+#         text = element_text(family="Milletun"),
+#         plot.title = element_text(vjust=-20, hjust=.2, color="#F2545B", size=20),
+#         plot.subtitle = element_text(vjust=-24, hjust=.44, color="#F2545B", size=17),
+#         plot.margin = unit(c(t=-1.35,r=0,b=0,l=0), "cm")
+#         ) +
+#   ggtitle("Historic Railroads") +
+#   labs(subtitle = "1855") +
+#   ggsave("static.png")
+```
+
+```{r}
+# Animation
+saveGIF({
+  for (i in unique(full_shp$year)) {
+    
+      plot <- ggplot() +
+      geom_sf(data=world, fill="#251E18", color="grey40", size=.2) +
+      geom_sf(data=states, size=.2, fill="#3D3229", color="grey40") +
+      geom_sf(data=full_shp[full_shp$year==i,], 
+              color="#F2545B", size=.3) +       
+      coord_sf(expand = F,ylim = c( -2216975.585964092,882352.1693851782),
+               xlim=c(-2131905.045865443, 2616373.8336742707)) +
+      theme_void() +
+      theme(plot.background = element_rect(fill="#A5CBC3", color=NA),
+            panel.background = element_rect(fill="#A5CBC3", color=NA),
+            text = element_text(family="Milletun"),
+            plot.title = element_text(vjust=-20, hjust=.3, color="#F2545B", size=14),
+            plot.subtitle = element_text(vjust=-24, hjust=.44, 
+                                         color="#F2545B",
+                                         size=11),
+          plot.margin = unit(c(t=-1.35,r=0,b=0,l=0), "cm")
+            ) +
+      ggtitle("Historical U.S Railroads") +
+      labs(subtitle = i) 
+    print(plot)
+  }
+}, movie.name="railroads.gif", ani.width = 1200, ani.height = 1200,ani.res=300)
+```
+
