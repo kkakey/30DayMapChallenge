@@ -1,0 +1,84 @@
+---
+title: "day18-landuse"
+author: "Kristen A, kkakey"
+date: "11/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(sf)
+library(tidyverse)
+library(shadowtext)
+```
+
+```{r}
+public_land <- read_sf("output-data/public_land2.shp")
+roads <- read_sf("output-data/roads.shp")
+sidewalks <- read_sf("output-data/sidewalks.shp")
+water <- read_sf("output-data/water.shp")
+city <- read_sf("raw-data/Madison_Urban_Area_Boundary-shp/Madison_Urban_Area_Boundary.shp")
+```
+
+```{r}
+## font from: https://www.fontspace.com/diffuse-away-font-f13081
+## font from: https://www.fontspace.com/coarse-rounded-font-f14962
+
+ggplot() +
+  geom_sf(data=city, color="grey20", fill="#FFFFC7") +
+  geom_sf(data=water, color="#6D435A", fill="#6D435A") +
+  geom_sf(data=public_land, color="#FF5A5F", fill="#FF5A5F") +
+  geom_sf(data=roads, size=.1) +
+  geom_sf(data=sidewalks, size=.05) +
+  coord_sf(expand = FALSE,  ylim = c(42.88, 43.28), xlim = c( -89.7, -89.1)) +
+  theme_void() +
+  theme(plot.background =  element_rect(fill="#C1839F", color="#C1839F"),
+       panel.background =  element_rect(fill="#C1839F", color="#C1839F"),
+       plot.subtitle = element_text(vjust = -25, hjust = .23, size=12,
+                                    family="Coarse Rounded"),  
+       plot.margin=grid::unit(c(1,0,0,1), "cm"),
+       plot.caption = element_text(vjust=30.7, hjust=.895, size=4, family="Coarse Rounded")
+       ) +
+  geom_shadowtext(aes(x = -89.5197, y = 43.2422, 
+                      label="PUBLIC LAND"), size=8, family="z",  
+                      color="#FF5A5F") +
+  labs(subtitle = "in madison, wisconsin",
+       caption = "@kkakey\ndata: madison open data") +
+  ggsave("plot_fun.png", dpi=1300)
+```
+
+With annotation
+```{r}
+paste0(round(public_land$area / city$area,2)*100,"%")
+
+### 124273639 / 584314903.571  ## 21% of public land when water is excluded from Madison area
+### 1 - (584314903.571 / city$area) # 10% of the city is lakes and water!
+
+ggplot() +
+  geom_sf(data=city, color="grey20", fill="#FFFFC7") +
+  geom_sf(data=water, color="#6D435A", fill="#6D435A") +
+  geom_sf(data=public_land, color="#FF5A5F", fill="#FF5A5F") +
+  geom_sf(data=roads, size=.1) +
+  geom_sf(data=sidewalks, size=.05) +
+  coord_sf(expand = FALSE,  ylim = c(42.88, 43.28), xlim = c( -89.7, -89.1)) +
+  theme_void() +
+  theme(plot.background =  element_rect(fill="#C1839F", color="#C1839F"),
+       panel.background =  element_rect(fill="#C1839F", color="#C1839F"),
+       plot.subtitle = element_text(vjust = -25, hjust = .23, size=12,
+                                    family="Coarse Rounded"),  
+       plot.margin=grid::unit(c(1,0,0,1), "cm"),
+       plot.caption = element_text(vjust=30.7, hjust=.895, size=4, family="Coarse Rounded")
+       ) +
+  geom_shadowtext(aes(x = -89.5197, y = 43.2422, 
+                      label="PUBLIC LAND"), size=8, family="z",  
+                      color="#FF5A5F") +
+  annotate("text", label="21% of Madison is public land", x = -89.5197,y = 43.2162, 
+           family= "Coarse Rounded",size=2.5) +
+  labs(subtitle = "in madison, wisconsin",
+       caption = "@kkakey\ndata: madison open data") +
+  ggsave("plot_fun_ann.png", dpi=900)
+```
+
