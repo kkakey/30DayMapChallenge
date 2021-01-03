@@ -96,6 +96,11 @@ Earth at night
 ![](https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/day16-island/plot.png)
 
 **************************************************************************************************
-#### Day 17 - [Island(s)](https://github.com/kkakey/30DayMapChallenge/blob/main/day17-historical/day17-historical.Rmd) 
+#### Day 17 - [Historical](https://github.com/kkakey/30DayMapChallenge/blob/main/day17-historical/day17-historical.Rmd) 
 
 ![](https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/day17-historical/railroads.gif)
+
+**************************************************************************************************
+#### Day 18 - [Landuse](https://github.com/kkakey/30DayMapChallenge/blob/main/day18-landuse/day18-landuse.Rmd) 
+
+![](https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/day18-landuse/plot_fun.png)
