@@ -108,9 +108,9 @@ Earth at night
 **************************************************************************************************
 #### Day 19 - [NULL](https://github.com/kkakey/30DayMapChallenge/blob/main/day19-null/day19-null.Rmd) 
 
-![](https://raw.githubusercontent.com/kkakey/30DayMapChallenge/blob/main/day19-null/plot.png)
+![](https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/day19-null/plot.png)
 
 **************************************************************************************************
 #### Day 20 - [Population](https://github.com/kkakey/30DayMapChallenge/blob/main/day20-population/day20-population.Rmd) 
 
-![](https://raw.githubusercontent.com/kkakey/30DayMapChallenge/blob/main/day20-population/plot2-1.png)
+![](https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/day20-population/plot2-1.jpg)
