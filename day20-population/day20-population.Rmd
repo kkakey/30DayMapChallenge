@@ -1,0 +1,140 @@
+---
+title: "day20-population"
+author: "Kristen A, kkakey"
+date: "11/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(sf)
+library(ggtext)
+```
+
+```{r}
+### https://data.cityofnewyork.us/Environment/2018-Central-Park-Squirrel-Census-Squirrel-Data/vfnx-vebw
+data <- read_csv("https://data.cityofnewyork.us/api/views/vfnx-vebw/rows.csv?accessType=DOWNLOAD")
+geo_df <- st_as_sf(data, coords = c("X", "Y"), crs= "EPSG:4326")
+manhat <- read_sf("output-data/manhattan_rotate.shp", crs= "EPSG:4326")
+park <- read_sf("output-data/central_park_poly.shp")
+water <- read_sf("output-data/central_park_river.shp")
+```
+
+
+```{r}
+### rotate shapefile
+### https://rpubs.com/geospacedman/rotatespatial
+rotateProj = function(spobj, angle) {
+    library(sp)
+    # get bounding box as spatial points object
+    boxpts = SpatialPoints(t(bbox(spobj)), proj4string = CRS(proj4string(spobj)))
+    # convert to lat-long
+    boxLL = bbox(spTransform(boxpts, CRS("+init=epsg:4326")))
+    # find the centre
+    llc = apply(boxLL, 1, mean)
+    ## due to different sizes/dimensions of the shapefiles
+    ## manually set the center point of roation to be the same
+    llc[1] <- -73.96535
+    llc[2] <- 40.78322
+    # construct the proj4 string
+    prj = paste0("+proj=omerc +lat_0=", llc[2], " +lonc=", llc[1], " +alpha=", 
+        angle, " +gamma=0.0 +k=1.000000 +x_0=0.000 +y_0=0.000 +ellps=WGS84 +units=m ")
+    # return as a CRS:
+    CRS(prj)
+}
+```
+
+
+```{r}
+geo_spdf <- as(geo_df, "Spatial")
+# get the proj4 string
+regionProj = rotateProj(geo_spdf, 28.8)
+# transform
+regionR_main = spTransform(geo_spdf, regionProj)
+squirrel <- st_as_sf(regionR_main, crs = 2263)
+st_crs(squirrel) <- 2263
+
+############################################
+
+manh_spdf <- as(manhat, "Spatial")
+# get the proj4 string
+regionProj = rotateProj(manh_spdf, 28.8)
+# transform
+regionR = spTransform(manh_spdf, regionProj)
+manhattan <- st_as_sf(regionR, crs = 2263)
+st_crs(manhattan) <- 2263
+
+############################################
+
+park_spdf <- as(park, "Spatial")
+# get the proj4 string
+regionProj_park = rotateProj(park_spdf, 28.8)
+# transform
+regionR_park = spTransform(park_spdf, regionProj_park)
+park_fin <- st_as_sf(regionR_park, crs = 2263)
+st_crs(park_fin) <- 2263
+
+############################################
+
+water_spdf <- as(water, "Spatial")
+# get the proj4 string
+regionProj_water = rotateProj(water_spdf, 28.8)
+# transform
+regionR_water = spTransform(water_spdf, regionProj_water)
+water_fin <- st_as_sf(regionR_water, crs = 2263)
+st_crs(water_fin) <- 2263
+```
+
+
+
+```{r}
+black_sq <- squirrel %>% filter(Primary.Fur.Color=="Black") %>% nrow()
+cinn_sq <- squirrel %>% filter(Primary.Fur.Color=="Cinnamon") %>% nrow()
+gray_sq <- squirrel %>% filter(Primary.Fur.Color=="Gray") %>% nrow()
+unkn_sq <- squirrel %>% filter(is.na(Primary.Fur.Color)) %>% nrow()
+
+
+ggplot() +
+  geom_sf(data=park_fin, size=.2, fill="#839788") +
+  geom_sf(data=water_fin, size=.2, fill="#4F6D7A") +
+  geom_sf(data=manhattan, size=.2) +
+  geom_sf(data=squirrel, aes(fill=Primary.Fur.Color), 
+          pch=21, color="black", size=1) +
+  theme_void() +
+  ggtitle("Squirrel Census, 2018") +
+  guides(fill = "none") +
+  # font from: https://ifonts.xyz/creative-vintage-font.html
+  theme(text = element_text(family="CreativeVintageRegular-BP"),
+        plot.margin = unit(c(t=0,r=3,b=0,l=-1), "cm"),
+        plot.title = element_text(vjust=-6, hjust=1.2),
+        plot.background = element_rect(fill="#EEE0CB", color="#EEE0CB"),
+        panel.background  = element_rect(fill="#EEE0CB", color="#EEE0CB"),
+        plot.caption = element_text(size=5, vjust = -45.5, hjust=1.21)
+        ) +
+  coord_sf(xlim=c(-2000, 3000), 
+           ylim=c(-1200, 1000), default_crs = NULL, clip = "off") +
+  scale_fill_manual(values=c("#38362E", "#9C4722", "#686868"),
+                    na.translate=T,na.value="#F5F5F5") +
+  geom_richtext(aes(x=3000,y=0,
+                    label=paste0(
+      "<span style = 'color:black'>",gray_sq,"</span>",
+      " <span style = 'color:#686868'>**gray**</span>,",
+      "<br><br> <span style = 'color:black'>",cinn_sq,"</span>",
+      " <span style = 'color:#9C4722'>**cinnamon**</span>,",
+      "<br><br> <span style = 'color:black'>",black_sq,"</span>",
+      " <span style = 'color:#38362E'>**black**</span>,",
+      "<br><br> <span style = 'color:black'>",unkn_sq,"</span>",
+      " <span style = 'color:#FFFFFF'>**unknown fur color**</span>,",
+      "<br><br> <span style = 'color:black'>Central Park squirrels",
+      "<br> in 2018</span>"),
+                    family="CreativeVintageRegular-BP"), 
+                    fill = NA, label.color = NA, size=3, color="#4D1F04") +
+  labs(caption = "Data: NYC Open Data\n                         @kkakey") +
+  ggsave("plot2.png", dpi=700)
+```
+
+
