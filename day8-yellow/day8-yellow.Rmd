@@ -136,20 +136,20 @@ ggplot() +
   geom_sf(data=roads, size=.1) +
   geom_text(data=sf_cent_ll, family="EmojiOne", 
               aes(x,y, size=cheese_count), color=cheese_color,
-            fill=cheese_color,
-            label=emoji('cheese')) +
-    geom_text(data=sf_cent_ll, family="EmojiOne",
+                fill=cheese_color,
+                label=emoji('cheese')) +
+  geom_text(data=sf_cent_ll, family="EmojiOne",
               aes(x,y, size=cheese_count), color=cheese_color,
-            fill=cheese_color,
-            label=emoji('cheese')) +
-    geom_text(data=sf_cent_ll, family="EmojiOne",
+                fill=cheese_color,
+                label=emoji('cheese')) +
+  geom_text(data=sf_cent_ll, family="EmojiOne",
               aes(x,y, size=cheese_count), color=cheese_color,
-            fill=cheese_color,
-            label=emoji('cheese')) +
+                fill=cheese_color,
+                label=emoji('cheese')) +
   geom_text(data=sf_cent_ll, family="EmojiOne",
             aes(x,y, size=cheese_count), color=cheese_color,
-            fill=cheese_color,
-            label=emoji('cheese')) +
+                fill=cheese_color,
+                label=emoji('cheese')) +
   theme_void() +
   scale_size_continuous(range = c(5, 10)) +
   coord_sf(expand = T,  ylim = c(42.5, 47), xlim = c( -93, -87)) +
@@ -161,7 +161,8 @@ ggplot() +
         legend.justification = c(.9,-.45),
         legend.direction="horizontal") +
   ggtitle("Where's the Cheese?") +
-  guides(size = guide_legend(title = "Cheese factories\n  by county", title.position = "top",
+  guides(size = guide_legend(title = "Cheese factories\n  by county", 
+                             title.position = "top",
                              title.vjust = -2, size=6)) +
   ggsave("county_cheese.png", dpi=950)
 
@@ -184,20 +185,20 @@ ggplot() +
   geom_sf(data=roads, size=.1) +
   geom_text(data=geocoded_shp_ll, family="EmojiOne", 
               aes(x,y), color=cheese_color,
-            fill=cheese_color,
-            label=emoji('cheese')) +
-    geom_text(data=geocoded_shp_ll, family="EmojiOne",
+                fill=cheese_color,
+                label=emoji('cheese')) +
+  geom_text(data=geocoded_shp_ll, family="EmojiOne",
               aes(x,y), color=cheese_color,
-            fill=cheese_color,
-            label=emoji('cheese')) +
+                fill=cheese_color,
+                label=emoji('cheese')) +
   geom_text(data=geocoded_shp_ll, family="EmojiOne", 
               aes(x,y), color=cheese_color,
-            fill=cheese_color,
-            label=emoji('cheese')) +
+                fill=cheese_color,
+                label=emoji('cheese')) +
   geom_text(data=geocoded_shp_ll, family="EmojiOne", 
               aes(x,y), color=cheese_color,
-            fill=cheese_color,
-            label=emoji('cheese')) +
+                fill=cheese_color,
+                label=emoji('cheese')) +
   theme_void() +
   scale_size_continuous(range = c(5, 10)) +
   coord_sf(expand = T,  ylim = c(42.5, 47), xlim = c( -93, -87)) +
@@ -234,20 +235,20 @@ ggplot() +
   geom_sf(data=roads, size=.1) +
   geom_text(data=sf_cent_ll, family="EmojiOne", 
               aes(x,y, size=cheese_count), color=cheese_color,
-            fill=cheese_color,
-            label=emoji('cheese')) +
-    geom_text(data=sf_cent_ll, family="EmojiOne",
+                fill=cheese_color,
+                label=emoji('cheese')) +
+  geom_text(data=sf_cent_ll, family="EmojiOne",
               aes(x,y, size=cheese_count), color=cheese_color,
-            fill=cheese_color,
-            label=emoji('cheese')) +
-    geom_text(data=sf_cent_ll, family="EmojiOne",
+                fill=cheese_color,
+                label=emoji('cheese')) +
+  geom_text(data=sf_cent_ll, family="EmojiOne",
               aes(x,y, size=cheese_count), color=cheese_color,
-            fill=cheese_color,
-            label=emoji('cheese')) +
+                fill=cheese_color,
+                label=emoji('cheese')) +
   geom_text(data=sf_cent_ll, family="EmojiOne",
             aes(x,y, size=cheese_count), color=cheese_color,
-            fill=cheese_color,
-            label=emoji('cheese')) +
+                fill=cheese_color,
+                label=emoji('cheese')) +
   theme_void() +
   scale_size_continuous(range = c(5, 10)) +
   coord_sf(expand = T,  ylim = c(42.5, 47), xlim = c( -93, -87)) +
@@ -262,8 +263,6 @@ ggplot() +
   guides(size = guide_legend(title = "Cheese factories\n  by county", title.position = "top",
                              title.vjust = -2, size=6)) +
   ggsave("county_cheese.png", dpi=950)
-
-
 ```
 
 
@@ -282,20 +281,20 @@ ggplot() +
   geom_sf(data=roads, size=.1) +
   geom_text(data=geocoded_shp_ll, family="EmojiOne", 
               aes(x,y), color=cheese_color,
-            fill=cheese_color,
-            label=emoji('cheese')) +
-    geom_text(data=geocoded_shp_ll, family="EmojiOne",
+                fill=cheese_color,
+                label=emoji('cheese')) +
+  geom_text(data=geocoded_shp_ll, family="EmojiOne",
               aes(x,y), color=cheese_color,
-            fill=cheese_color,
-            label=emoji('cheese')) +
+                fill=cheese_color,
+                label=emoji('cheese')) +
   geom_text(data=geocoded_shp_ll, family="EmojiOne", 
               aes(x,y), color=cheese_color,
-            fill=cheese_color,
-            label=emoji('cheese')) +
+                fill=cheese_color,
+                label=emoji('cheese')) +
   geom_text(data=geocoded_shp_ll, family="EmojiOne", 
               aes(x,y), color=cheese_color,
-            fill=cheese_color,
-            label=emoji('cheese')) +
+                fill=cheese_color,
+                label=emoji('cheese')) +
   theme_void() +
   scale_size_continuous(range = c(5, 10)) +
   coord_sf(expand = T,  ylim = c(42.5, 47), xlim = c( -93, -87)) +
