@@ -1,0 +1,115 @@
+---
+title: "day1-points"
+author: "Kristen A, kkakey"
+date: "11/2/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(sf)
+library(tidyverse)
+```
+
+I created this dot density map following this [great tutorial](https://www.cultureofinsight.com/post/multivariate-dot-density-maps-in-r-with-sf-ggplot2) by James Smythe!
+
+```{r}
+mi <- read_sf("./output-data/bg2019_mi-noparks-countyclipped.shp")
+
+# demographic break-down (%)
+(apply(as.data.frame(mi) %>% 
+  dplyr::select(WHT_NH19, BLK_NH19, ASN_ALL19, HISP19, OTH_ALL19) ,2, sum) / sum(mi$TOTPOP19))*100
+```
+
+
+```{r}
+## code comes from James Smythe tutorial
+# credit to Jens von Bergmann for this algo https://github.com/mountainMath/dotdensity/blob/master/R/dot-density.R
+random_round <- function(x) {
+    v=as.integer(x)
+    r=x-v
+    test=runif(length(r), 0.0, 1.0)
+    add=rep(as.integer(0),length(r))
+    add[r>test] <- as.integer(1)
+    value=v+add
+    ifelse(is.na(value) | value<0,0,value)
+    return(value)
+  }
+```
+
+```{r}
+## code comes from James Smythe tutorial
+
+# data frame of number of dots to plot for each race (1 for every 25 people)
+num_dots <- as.data.frame(mi) %>% 
+  dplyr::select(WHT_NH19,  BLK_NH19, ASN_ALL19, HISP19, OTH_ALL19) %>% 
+  mutate_all(funs(. / 100)) %>% 
+  mutate_all(random_round)
+
+# generates data frame with coordinates for each point + what race it is assiciated with
+sf_dots <- map_df(names(num_dots), 
+                  ~ st_sample(mi, size = num_dots[,.x], type = "random") %>% # generate the points in each polygon
+                    st_cast("POINT") %>%                                          # cast the geom set as 'POINT' data
+                    st_coordinates() %>%                                          # pull out coordinates into a matrix
+                    as_tibble() %>%                                               # convert to tibble
+                    setNames(c("lon","lat")) %>%                                  # set column names
+                    mutate(Race = .x)                                            # add categorical race variable
+                  ) %>% 
+  slice(sample(1:n())) # once map_df binds rows randomise order to avoid bias in plotting order
+
+# convert to sf object
+sf_dots2 <-st_as_sf(sf_dots, coords = c("lon", "lat"), crs= 4326, na.fail=T)
+```
+
+```{r}
+city_outline <- read_sf("./raw-data/citylimit/citylimit.shp")
+city_outline <- st_transform(city_outline, crs=crs(mi))
+
+county <- read_sf("./raw-data/County_Boundary/County_Boundary.shp")
+county <- st_transform(county, crs=crs(mi))
+bbox = st_bbox(county) 
+
+wi <- read_sf("./raw-data/Wisconsin_State_Boundary_24K/Wisconsin_State_Boundary_24K.shp")
+wi <- st_transform(wi, crs=crs(mi))
+
+# pal <- c("#8dd3c7", "#ffffb3", "#fb8072", "#bebada", "#80b1d3") # original
+pal <- c("#8447FF", "#FFBC0A", "#00CECB", "#EDC9FF", "#FC2F00") # plot -2
+```
+
+```{r}
+ggplot() +
+  geom_sf(data = wi, fill = "#131513",colour = "#131513", size=.1) +
+  geom_sf(data = city_outline, fill = "#1D201F",colour = "#1D201F", size=.1) +
+  geom_sf(data=sf_dots2, aes(colour = Race), size = 0.01) +
+  scale_colour_manual(values = pal,
+                      labels = c('Asian', 'Black', 'Hispanic', 'Other', 'White')) +
+  guides(colour = guide_legend(nrow=1,byrow=TRUE, override.aes = list(size = 3))) +
+  theme_void() +
+    theme(
+        legend.position = c(.7, .21), legend.direction = "horizontal",
+        legend.background=element_blank(), legend.title = element_blank(),
+        legend.text = element_text(size=5,margin = margin(r = 2, l=-7, unit = "pt")),
+        legend.key.height=unit(-10,"pt"),
+        plot.background = element_rect(fill = "#212121", color = NA), 
+        panel.background = element_rect(fill = "#212121", color = NA),
+        plot.margin = margin(.5, 4, -.5, 1, "cm"),
+        text =  element_text(color = "white", family = "Merriweather"),
+  ) +
+  coord_sf(
+    xlim = c(bbox['xmin']-.03, bbox['xmax']),
+    ylim = c(bbox['ymin'], bbox['ymax']), clip = "off"
+  ) +
+  ggtext::geom_richtext(x=-87.83, y=43.13, 
+                aes(label = "Racial Demographics<br>of Milwaukee, WI",
+                family="Merriweather"), fill = NA, label.color = NA, size=3.1, color="white"
+  ) +
+  ggtext::geom_richtext(x=-87.83, y=43.115, 
+                aes(label = "1 point represents 100 people<br>Data comes from 2019 Census block group data",
+                family="Merriweather"), fill = NA, label.color = NA, size=2, color="white"
+  ) +
+  ggsave("plot100-2.png", dpi=1000)
+```
+
