@@ -1,0 +1,41 @@
+---
+title: "Untitled"
+author: "Kristen A, kkakey"
+date: "7/11/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(ggplot2)
+library(sf)
+```
+
+```{r}
+london <- read_sf("./output-data/london_clipped_27700.shp")
+
+pal <- c("#EAD94C", "#C3423F", "#44FFD1")
+```
+
+```{r}
+ggplot() +
+  geom_sf(data=london, color="#1B1B1E", fill="#373F51", size=.01) +
+  theme_void() +
+  theme(plot.background = element_rect(fill="#D8DBE2", color=NA),
+        panel.background = element_rect(fill="#D8DBE2", color=NA),
+        plot.title = element_text(family="BittersweetNF", size=20, hjust=.65, vjust=-12)) +
+  coord_sf(expand=T) +
+  ggtitle("London")
+
+ggsave("plot-london.png", dpi=1200)
+```
+
+Shapefiles
+- City of London buildings 
+    - https://twitter.com/undertheraedar/status/517955754368970752 
+    - https://drive.google.com/file/d/0B0kRhiw4fD7uQzU3MzBMRzFfSFk/view?resourcekey=0-wVX6FKxK5Kx5hZ8GJnolDw
+- Inner London boundary (used for clipping)
+    - http://ubdc.gla.ac.uk/dataset/inner-and-outer-london-boundaries-london-plan-consultation-2009/resource/684e59f2-9208-4da1-bf67-d8dfeb72c047
