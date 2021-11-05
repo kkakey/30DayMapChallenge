@@ -13,9 +13,17 @@ My contributions to [#30DayMapChallenge](https://github.com/tjukanovt/30DayMapCh
 #### Day 1 - [Points](https://github.com/kkakey/30DayMapChallenge/blob/main/2021/day1-points/day1-points.Rmd) 
 
 <p align="center">
-<a href="url"><img src="https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/2021/day1-points/plot100-2.png" width="500" ></a>
+<a href="url"><img src="https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/2021/day1-points/plot100-2.png" width="550" ></a>
 </p>
 
+**************************************************************************************************
+
+#### Day 3 - [Polygons](https://github.com/kkakey/30DayMapChallenge/blob/main/2021/day3-polygons/london.Rmd) 
+Budapest buildings
+
+<p align="center">
+<a href="url"><img src="https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/2021/day3-polygons/plot-london.png" width="700" ></a>
+</p>
 
 
 <hr style="border:10px solid blue"> </hr>
