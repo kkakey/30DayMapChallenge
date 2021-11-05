@@ -1,8 +1,28 @@
 # 30DayMapChallenge
 
-************************************
+# 2021
 
-My contribution to [#30DayMapChallenge](https://github.com/tjukanovt/30DayMapChallenge), a daily social mapping project in November 2020.
+My contributions to [#30DayMapChallenge](https://github.com/tjukanovt/30DayMapChallenge), a daily social mapping project in November 2021.
+
+<p align="center">
+<a href="url"><img src="https://raw.githubusercontent.com/tjukanovt/30DayMapChallenge/master/images/30dmpc_2021.png" width="500" ></a>
+</p>
+
+**************************************************************************************************
+
+#### Day 1 - [Points](https://github.com/kkakey/30DayMapChallenge/blob/main/2021/day1-points/day1-points.Rmd) 
+
+<p align="center">
+<a href="url"><img src="https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/2021/day1-points/plot100-2.png" width="500" ></a>
+</p>
+
+
+
+<hr style="border:10px solid blue"> </hr>
+
+<br><br><br>
+
+# 2020
 
 <p align="center">
 <a href="url"><img src="https://raw.githubusercontent.com/tjukanovt/30DayMapChallenge/master/images/map_challenge_themes_2020.jpg" width="500" ></a>
