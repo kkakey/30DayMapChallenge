@@ -24,6 +24,16 @@ My contributions to [#30DayMapChallenge](https://github.com/tjukanovt/30DayMapCh
 <a href="url"><img src="https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/2021/day3-polygons/plot-london.png" width="700" ></a>
 </p>
 
+**************************************************************************************************
+
+#### Day 3 - [Hexagons](https://github.com/kkakey/30DayMapChallenge/blob/main/2021/day4-hexagons/day4-hexagons.Rmd) 
+
+<p align="center">
+<a href="url"><img src="https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/2021/day4-hexagons/combined_plot.png" width="800" ></a>
+</p>
+
+
+
 
 <hr style="border:10px solid blue"> </hr>
 
