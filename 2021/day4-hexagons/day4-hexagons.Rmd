@@ -1,0 +1,157 @@
+---
+title: "day4-hexagons"
+author: "Kristen A, kkakey"
+date: "11/10/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The code and inspiration for this map comes from [Lorena Abad Crespo's map](https://github.com/loreabad6/30DayMapChallenge/blob/main/maps/day04.png). Check out her amazing map and work -- I learned so many cool new things from her (like st_make_grid(), creating distance maps, st_union(), st_distance())
+
+- https://github.com/loreabad6
+- https://github.com/loreabad6/30DayMapChallenge/blob/main/scripts/day04_hexagons.R
+
+
+
+```{r}
+library(sf)
+library(tidyverse)
+```
+
+```{r}
+nyc <- read_sf('/Users/kristenakey/Downloads/Borough\ Boundaries/geo_export_c0d09366-0177-40f9-9072-8757ca3b0d0a.shp')
+subways <- read_sf('/Users/kristenakey/Downloads/DOITT_SUBWAY_STATION_04JAN2017/DOITT_SUBWAY_STATION_04JAN2017.shp')
+bus <- read_sf('/Users/kristenakey/Downloads/Bus\ Stop\ Shelters/geo_export_235d7429-6eda-4e99-99c2-18035db8f781.shp')
+```
+
+```{r}
+### code from https://github.com/loreabad6/30DayMapChallenge/blob/main/scripts/day04_hexagons.R
+nyc_grid <- st_make_grid(nyc, square = F, n = c(150, 150))
+
+grid = st_intersection(nyc_grid, nyc)
+
+grid <- st_transform(grid, st_crs(subways))
+
+subway_pts <- subways %>%
+  st_union()
+
+dist = st_distance(grid, subway_pts) %>% 
+  units::set_units("mi")
+
+q = classInt::classIntervals(dist, n = 9, style = "quantile")
+
+nyc_subway = grid %>% 
+  st_as_sf() %>% 
+  mutate(
+    dist = dist,
+    distq = cut(
+      dist,
+      breaks=c(0,.1,.25,.5,.75, 1,15),
+      include.lowest = T, right = T
+    )
+  ) 
+
+ggplot() +
+geom_sf(data = nyc_subway, aes(fill = distq),
+         color = NA, alpha = 0.95) +
+ theme_void() +
+ scale_fill_brewer(palette = "Oranges", direction=-1) +
+ theme(plot.background = element_rect(fill="transparent", color="transparent"),
+       legend.position = "none") +
+ ggsave("plot-subway.png", bg="transparent")
+```
+
+
+```{r}
+### code from https://github.com/loreabad6/30DayMapChallenge/blob/main/scripts/day04_hexagons.R
+nyc_grid <- st_make_grid(nyc, square = F, n = c(150, 150))
+
+grid = st_intersection(nyc_grid, nyc)
+
+grid <- st_transform(grid, st_crs(bus))
+
+bus_pts <- bus %>%
+  st_union()
+
+dist_bus = st_distance(grid, bus_pts) %>% 
+  units::set_units("mi")
+
+q = classInt::classIntervals(dist_bus, n = 9, style = "quantile")
+
+
+nyc_bus = grid %>% 
+  st_as_sf() %>% 
+  mutate(
+    dist = dist_bus,
+    distq_bus = cut(
+      dist,
+      breaks=c(0,.1,.25,.5,.75, 1,15),
+      include.lowest = T, right = T
+    )
+  ) 
+
+ggplot() +
+ geom_sf(data = nyc_bus, aes(fill = distq_bus),
+          color = NA, alpha = 0.95) +
+  theme_void() +
+  scale_fill_brewer(palette = "Oranges", direction=-1) +
+  theme(plot.background = element_rect(fill="transparent", color="transparent"),
+        legend.position = "none") +
+  ggsave("plot-bus.png", bg="transparent")
+```
+
+```{r}
+## legend
+ggplot() +
+ geom_sf(data = nyc_subway, aes(fill = distq),
+          color = NA, alpha = 0.95) +
+  theme_void() +
+  scale_fill_brewer(palette = "Oranges", direction=-1, 
+                    label = c("<0.1\n<2 min.", ".01—.25\n2—6 min.", ".25—.5\n6—12 min.", 
+                              ".5—.75\n12—18 min.", ".75—1\n18—24 min.", "1+\n24+ min.")) +
+  theme(plot.background = element_rect(fill="transparent", color="transparent"),
+        legend.position = "bottom", 
+        legend.title = element_text(size=9), 
+        text = element_text(family="JosefinSans-Regular",
+                            color = "white"),
+        legend.key.height = unit(.75, 'cm'), legend.key.width = unit(.75, 'cm'),
+        legend.text = element_text(margin = margin(r = 5, l=5, unit = "pt")),
+        plot.margin = unit(c(t=0, r=0, b=2, l=0), "cm")) +
+  guides(fill = guide_legend(title="\n\nMiles\nWalk Time", title.vjust = -0.001,
+                             nrow=1,byrow=TRUE, override.aes = list(size = 5),
+                             label.position = "bottom", title.position = "right")) +
+  ggsave("legend.png", bg="transparent")
+```
+
+
+Combine plots
+```{r}
+library(cowplot)
+
+ggdraw() + 
+  draw_image("plot-subway.png", scale = 1, x = -.25,y = 0) +
+  draw_image("plot-bus.png", scale = 1, x = .25,y = 0) +
+  draw_label("Distance to NYC Public Transportaion Station",size=24,y=1.10,
+             fontfamily="JosefinSans-SemiBold", color = "white") +
+  draw_label("Subway",size=20,y=.95,x=.25,fontfamily="JosefinSans-SemiBold", color = "white") +
+  draw_label("Bus",size=20,y=.95,x=.77,fontfamily="JosefinSans-SemiBold", color = "white") +
+  draw_label("Data: NYC Open Data | Created by: @kkakey",size=7,y=.01,x=.93,fontfamily="JosefinSans-SemiBold", color = "white") +
+  theme(text = element_text(family="JosefinSans-Regular"),
+        plot.background = element_rect(fill="#2D3142", color = "#2D3142"),
+        panel.background = element_rect(fill="#2D3142", color = "#2D3142"),
+        plot.margin = unit(c(t=3, r=0, b=.4, l=0), "cm")) +
+  ggsave("combined_plot.png", height = 9.5, width=16.5) 
+
+### I manually copied and pasted the legend I created in legend.png and added it to the final plot
+```
+
+
+
+
+
+
+
+
