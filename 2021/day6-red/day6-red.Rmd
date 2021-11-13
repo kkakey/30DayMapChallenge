@@ -1,0 +1,50 @@
+---
+title: "day6-red"
+author: "Kristen A, kkakey"
+date: "11/12/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(sf)
+library(tidyverse)
+```
+
+```{r}
+buildings <- read_sf("./../../2020/day3-polygons/output-data/buildings.shp")
+roads <- read_sf("./output-data/roads_budapest.shp")
+parks <- read_sf('./output-data/hungary-natural-shape/natural.shp')
+```
+
+```{r}
+cc <- scales::seq_gradient_pal("#F6B3A2", "#6F1F0B", "Lab")(seq(0,1,length.out=length(unique(buildings$type))))
+
+ggplot() +
+  geom_sf(data=parks, aes(fill=type, color=type), size=.05) +
+  scale_fill_manual(values = c("#777DA7","#A9ACC7")) + scale_color_manual(values = c("#777DA7","#A9ACC7"), labels=NULL) +
+  ggnewscale::new_scale_fill() + ggnewscale::new_scale_color() +
+  geom_sf(data=buildings, aes(fill=type, color=type), size=.1) +
+  scale_fill_manual(values=cc) + scale_colour_manual(values=cc) +
+  geom_sf(data=roads, size=.1, color="white") +
+  theme_void() +
+  coord_sf(clip="off", ylim = c(47.47, 47.57), xlim = c( 19, 19.08)) +
+  theme(legend.position = "none",
+        plot.background = element_rect(fill= "#22223B", color="#22223B"),
+        panel.background = element_rect(fill= "#22223B", color="#22223B")) +
+  ggsave("budapest-buildings-2021-3-4.png", dpi=800, width=8, height=6, bg = "#22223B")
+```
+
+
+```{r}
+library(cowplot)
+ggdraw() +
+  draw_image("budapest-buildings-2021-3-4_cropped.png", scale = .9) +
+  panel_border(color = "grey85", size = 10, linetype = 1, remove = FALSE) +
+  draw_label("Budapest — 47.4979° N, 19.0402° E",size=20,y=.06,x=.3,fontfamily="Empire-Black", color = "black") +
+  ggsave("budapest-border.png", height = 5)
+```
+
