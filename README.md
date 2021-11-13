@@ -21,15 +21,23 @@ My contributions to [#30DayMapChallenge](https://github.com/tjukanovt/30DayMapCh
 #### Day 3 - [Polygons](https://github.com/kkakey/30DayMapChallenge/blob/main/2021/day3-polygons/london.Rmd) 
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/2021/day3-polygons/plot-london.png" width="700" >
+<img src="https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/2021/day3-polygons/plot-london.png" width="800" >
 </p>
 
 **************************************************************************************************
 
-#### Day 3 - [Hexagons](https://github.com/kkakey/30DayMapChallenge/blob/main/2021/day4-hexagons/day4-hexagons.Rmd) 
+#### Day 4 - [Hexagons](https://github.com/kkakey/30DayMapChallenge/blob/main/2021/day4-hexagons/day4-hexagons.Rmd) 
 
 <p align="center">
-<a href="url"><img src="https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/2021/day4-hexagons/combined_plot.png" width="800" ></a>
+<a href="url"><img src="https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/2021/day4-hexagons/combined_plot.png" width="900" ></a>
+</p>
+
+**************************************************************************************************
+
+#### Day 6 - [Red](https://github.com/kkakey/30DayMapChallenge/blob/main/2021/day6-red/day6-red.Rmd) 
+
+<p align="center">
+<a href="url"><img src="https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/2021/day6-red/plots/budapest-border.png" width="900" ></a>
 </p>
 
 
@@ -42,7 +50,7 @@ My contributions to [#30DayMapChallenge](https://github.com/tjukanovt/30DayMapCh
 # 2020
 
 <p align="center">
-img src="https://raw.githubusercontent.com/tjukanovt/30DayMapChallenge/master/images/map_challenge_themes_2020.jpg" width="500" >
+<img src="https://raw.githubusercontent.com/tjukanovt/30DayMapChallenge/master/images/map_challenge_themes_2020.jpg" width="500" >
 </p>
 
 **************************************************************************************************
