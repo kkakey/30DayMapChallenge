@@ -34,8 +34,8 @@ ggplot() +
     ylim = c(bbox['ymin']+.065, bbox['ymax']+.05), clip = "off"
   ) +
     ggtext::geom_richtext(x=-87.84, y=43.15, 
-                aes(label = "Directions in Street Name",
-                family="HighwayGothic"), fill = NA, label.color = NA, size=4.3, color="white"
+                aes(label = "Directions in Street Names",
+                family="HighwayGothic"), fill = NA, label.color = NA, size=4.5, color="white"
   ) +
   ggtext::geom_richtext(x=-87.84, y=43.14, 
                 aes(label = "Milwaukee",
