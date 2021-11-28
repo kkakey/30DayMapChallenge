@@ -18,6 +18,14 @@ My contributions to [#30DayMapChallenge](https://github.com/tjukanovt/30DayMapCh
 
 **************************************************************************************************
 
+#### Day 2 - [Lines](https://github.com/kkakey/30DayMapChallenge/blob/main/2021/day2-lines/day2-lines.Rmd) 
+
+<p align="center">
+<img src="https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/2021/day2-lines/miplot.png" width="550" >
+</p>
+
+**************************************************************************************************
+
 #### Day 3 - [Polygons](https://github.com/kkakey/30DayMapChallenge/blob/main/2021/day3-polygons/london.Rmd) 
 
 <p align="center">
