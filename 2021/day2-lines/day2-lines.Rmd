@@ -1,0 +1,64 @@
+---
+title: "day2-lines"
+author: "Kristen A, kkakey"
+date: "11/5/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(sf)
+library(tidyverse)
+```
+
+```{r}
+county <- read_sf("../day1-points/raw-data/County_Boundary/County_Boundary.shp")
+bbox = st_bbox(county) 
+```
+
+```{r}
+ggplot() +
+  geom_sf(data=county, size=.1, color="#240B36", fill="#240B36") +
+  geom_sf(data=streets, aes(color=StreetDire), size=.2) +
+  scale_color_manual(values=c("#067BC2", "#35CE8D","#F2A359", "#F2DC5D")) +
+  theme_void() +
+  theme(plot.background = element_rect(color="#0C0311", fill="#0C0311"),
+        panel.background = element_rect(color="#0C0311", fill="#0C0311"),
+        legend.position = "none"
+        ) +
+  coord_sf(
+    xlim = c(bbox['xmin']-.03, bbox['xmax']+.07),
+    ylim = c(bbox['ymin']+.065, bbox['ymax']+.05), clip = "off"
+  ) +
+    ggtext::geom_richtext(x=-87.84, y=43.15, 
+                aes(label = "Directions in Street Name",
+                family="HighwayGothic"), fill = NA, label.color = NA, size=4.3, color="white"
+  ) +
+  ggtext::geom_richtext(x=-87.84, y=43.14, 
+                aes(label = "Milwaukee",
+                family="HighwayGothic"), fill = NA, label.color = NA, size=3.1, color="white"
+  ) +
+    ggtext::geom_richtext(x=-87.81, y=43.12, 
+                aes(label = "North",
+                family="HighwayGothic"), fill = NA, label.color = NA, size=2.4, color="#35CE8D"
+  ) +
+      ggtext::geom_richtext(x=-87.81, y=43.08, 
+                aes(label = "South",
+                family="HighwayGothic"), fill = NA, label.color = NA, size=2.4, color="#F2A359"
+  ) +
+        ggtext::geom_richtext(x=-87.78, y=43.10, 
+                aes(label = "East",
+                family="HighwayGothic"), fill = NA, label.color = NA, size=2.4, color="#067BC2"
+  ) +
+          ggtext::geom_richtext(x=-87.84, y=43.10, 
+                aes(label = "West",
+                family="HighwayGothic"), fill = NA, label.color = NA, size=2.4, color="#F2DC5D"
+  ) +
+  ggsave("miplot.png", dpi=650)
+```
+
+Font: [Highway Gothic](https://www.dafont.com/highway-gothic.font)
+
