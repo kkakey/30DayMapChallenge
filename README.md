@@ -5,7 +5,7 @@
 My contributions to [#30DayMapChallenge](https://github.com/tjukanovt/30DayMapChallenge), a daily social mapping project in November 2021.
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/tjukanovt/30DayMapChallenge/master/images/30dmpc_2021.png" width="500" >
+<img src="https://raw.githubusercontent.com/ambarja/30DayMapChallenge/master/images/flyers/30dmpc_2021.png" width="500" >
 </p>
 
 **************************************************************************************************
@@ -42,10 +42,19 @@ My contributions to [#30DayMapChallenge](https://github.com/tjukanovt/30DayMapCh
 
 **************************************************************************************************
 
-#### Day 6 - [Red](https://github.com/kkakey/30DayMapChallenge/blob/main/2021/day6-red/day6-red.Rmd) 
+#### Day 5 - [OpenStreetMap](https://github.com/kkakey/30DayMapChallenge/blob/main/2021/day5-osm/day5-osm.Rmd) 
 
 <p align="center">
-<a href="url"><img src="https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/2021/day6-red/plots/budapest-border.png" width="900" ></a>
+<a href="url"><img src="https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/2021/day5-osm/plot.png" width="650" ></a>
+</p>
+
+
+**************************************************************************************************
+
+#### Day 6,7 - [Red](https://github.com/kkakey/30DayMapChallenge/blob/main/2021/day6-red/day6-red.Rmd), Green 
+
+<p align="center">
+<a href="url"><img src="https://raw.githubusercontent.com/kkakey/30DayMapChallenge/main/2021/day6-red/plots/budapest-border2.png" width="900" ></a>
 </p>
 
 
@@ -58,7 +67,7 @@ My contributions to [#30DayMapChallenge](https://github.com/tjukanovt/30DayMapCh
 # 2020
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/tjukanovt/30DayMapChallenge/master/images/map_challenge_themes_2020.jpg" width="500" >
+<img src="https://david.frigge.nz/30DayMapChallenge2020/images/map_challenge_themes_2020.jpg" width="500" >
 </p>
 
 **************************************************************************************************
