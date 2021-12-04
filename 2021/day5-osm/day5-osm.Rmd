@@ -1,0 +1,79 @@
+---
+title: "day5-osm"
+author: "Kristen A, kkakey"
+date: "11/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(osmdata)
+library(sf)
+```
+
+https://wiki.openstreetmap.org/wiki/Map_features
+
+```{r}
+streets <- getbb("Wisconsin Rapids")%>%
+  opq()%>%
+  add_osm_feature(key = "highway", 
+                  value = c("motorway", "primary", 
+                            "secondary", "tertiary")) %>%
+  osmdata_sf()
+
+small_streets <- getbb("Wisconsin Rapids")%>%
+  opq()%>%
+  add_osm_feature(key = "highway", 
+                  value = c("residential", "living_street",
+                            "unclassified",
+                            "service", "footway")) %>%
+  osmdata_sf()
+
+river <- getbb("Wisconsin Rapids")%>%
+  opq()%>%
+  add_osm_feature(key = "waterway", value = "river") %>%
+  osmdata_sf()
+
+building <- getbb("Wisconsin Rapids")%>%
+  opq()%>%
+  add_osm_feature(key = "building") %>%
+  osmdata_sf()
+
+building_poly <- building$osm_polygons %>%
+  filter(!is.na(building)) %>%
+  mutate(building_desc = coalesce(amenity,building)) %>%
+  select(name, building_desc)
+
+building_poly <- building_poly %>%
+  mutate(building_desc = case_when(building_desc == "yes;retail" ~ "retail",
+                                   building_desc == "yes" ~ "house",
+                                   building_desc == "church" ~ "place_of_worship",
+                                   T ~ building_desc)
+         )
+```
+
+```{r}
+cc <- scales::seq_gradient_pal("#E7C5DB", "#3A182E", "Lab")(seq(0,1,length.out=length(unique(building_poly$building_desc))))
+
+ggplot() +
+  geom_sf(data=river$osm_lines, color="#3B6391", size=4) +
+  geom_sf(data=building_poly, aes(fill=building_desc, color=building_desc), size=.4) +
+  scale_fill_manual(values=cc) + scale_colour_manual(values=cc) +
+  geom_sf(data=small_streets$osm_lines, size=.1) +
+  geom_sf(data=streets$osm_lines, size=.1) +
+  coord_sf(clip = "on", xlim = c(-89.885, -89.745), ylim = c(44.32,44.44)) +
+  theme_void() +
+  ggtext::geom_richtext(aes(x=-89.85,y=44.43,label="Wisconsin Rapids, WI",family="AYearWithoutRain"), 
+                fill = "#EBF5EE", label.color = NA, size=4.75, color="black") +
+  ggtext::geom_richtext(aes(x=-89.76,y=44.345,label="Data: OpenStreetMap<br>Nov. 2021 | @kkakey",
+                            family="AYearWithoutRain"), 
+                fill = "#EBF5EE", label.color = NA, size=1.5, color="black") +
+  theme(legend.position = "none",
+        plot.background = element_rect(color="#EBF5EE", fill="#EBF5EE")) +
+  ggsave("plot.png", dpi=650)
+```
+
