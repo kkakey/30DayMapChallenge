@@ -46,5 +46,12 @@ ggdraw() +
   panel_border(color = "grey85", size = 10, linetype = 1, remove = FALSE) +
   draw_label("Budapest — 47.4979° N, 19.0402° E",size=20,y=.06,x=.3,fontfamily="Empire-Black", color = "black") +
   ggsave("budapest-border.png", height = 5)
+
+library(cowplot)
+ggdraw() +
+  draw_image("budapest-buildings-2021-3-3_cropped.png", scale = .82) +
+  panel_border(color = "grey85", size = 10, linetype = 1, remove = FALSE) +
+  draw_label("Budapest — 47.4979° N, 19.0402° E",size=20,y=.06,x=.3,fontfamily="Empire-Black", color = "black") +
+  ggsave("budapest-border2.png", height = 5, width=6.5)
 ```
 
